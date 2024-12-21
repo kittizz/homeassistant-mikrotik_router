@@ -519,27 +519,27 @@ class MikrotikCoordinator(DataUpdateCoordinator[None]):
             if "wifiwave2" in packages and packages["wifiwave2"]["enabled"]:
                 self.support_capsman = False
                 self._wifimodule = "wifiwave2"
-                
+
             elif "wifi" in packages and packages["wifi"]["enabled"]:
                 self.support_capsman = False
                 self._wifimodule = "wifi"
-                
+
             elif "wifi-qcom" in packages and packages["wifi-qcom"]["enabled"]:
                 self.support_capsman = False
                 self._wifimodule = "wifi"
-                
+
             elif "wifi-qcom-ac" in packages and packages["wifi-qcom-ac"]["enabled"]:
                 self.support_capsman = False
                 self._wifimodule = "wifi"
-                
+
             else:
                 self.support_capsman = True
                 self.support_wireless = bool(self.minor_fw_version < 13)
-                
+
             _LOGGER.debug("Mikrotik %s wifi module=%s",
-                    self.host,
-                    self._wifimodule,
-                    )
+                          self.host,
+                          self._wifimodule,
+                          )
 
         if "ups" in packages and packages["ups"]["enabled"]:
             self.support_ups = True
@@ -1111,6 +1111,7 @@ class MikrotikCoordinator(DataUpdateCoordinator[None]):
             skip=[
                 {"name": "dynamic", "value": True},
                 {"name": "action", "value": "jump"},
+                {"name": "comment", "value": "none"}
             ],
         )
 
@@ -1578,7 +1579,7 @@ class MikrotikCoordinator(DataUpdateCoordinator[None]):
         if self.ds["fw-update"]["installed-version"] != "unknown":
             try:
                 full_version = self.ds["fw-update"].get("installed-version")
-                split_end = min(len(full_version),4)
+                split_end = min(len(full_version), 4)
                 version = re.sub("[^0-9\.]", "", full_version[0:split_end])
                 self.major_fw_version = int(version.split(".")[0])
                 self.minor_fw_version = int(version.split(".")[1])
@@ -1985,13 +1986,13 @@ class MikrotikCoordinator(DataUpdateCoordinator[None]):
     # ---------------------------
     def get_capsman_hosts(self) -> None:
         """Get CAPS-MAN hosts data from Mikrotik"""
-        
+
         if self.major_fw_version > 7 or (self.major_fw_version == 7 and self.minor_fw_version >= 13):
             registration_path = "/interface/wifi/registration-table"
-            
+
         else:
-            registration_path= "/caps-man/registration-table"
-            
+            registration_path = "/caps-man/registration-table"
+
         self.ds["capsman_hosts"] = parse_api(
             data={},
             source=self.api.query(registration_path),
